@@ -1,3 +1,4 @@
 #!/bin/sh
 
-sudo NIXOS_CONFIG="$HOME/nixos-servers/space/configuration.nix" nixos-rebuild switch
+sudo NIXOS_CONFIG="$(realpath $(dirname $0))/space/configuration.nix" \
+    nixos-rebuild switch
