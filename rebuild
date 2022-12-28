@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sudo NIXOS_CONFIG="$HOME/nixos-servers/space/configuration.nix" nixos-rebuild switch
