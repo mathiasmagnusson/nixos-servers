@@ -4,6 +4,8 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../nginx
+      # TODO: make this work );
+      # ./certificates.nix
     ];
 
   # Use the GRUB 2 boot loader.
@@ -13,6 +15,7 @@
 
   networking.hostName = "space"; # Define your hostname.
   networking.usePredictableInterfaceNames = false;
+  networking.nameservers = [ "1.1.1.1" ];
 
   # Set your time zone.
   time.timeZone = "Europe/Stockholm";
@@ -66,12 +69,13 @@
     enable = true;
     permitRootLogin = "no";
     passwordAuthentication = false;
+    ports = [ 69 ];
   };
 
   # Linode longview
   services.longview = {
     enable = true;
-    apiKeyFile = "/var/lib/longview/apiKeyFile";
+    apiKeyFile = "/var/lib/secrets/longview";
   };
 
   # Enable firewall. Some services automatically open ports they use
