@@ -4,8 +4,10 @@ let
   sslCertificate = "/var/lib/secrets/tls-certificate/fullchain.pem";
 
   sites = [
-    (import ./sites/www.nix)
-    (import ./sites/files.nix)
+    (import ./sites/www.nix     { inherit pkgs; })
+    (import ./sites/files.nix   { inherit pkgs; })
+    (import ./sites/rr.nix      { inherit pkgs; })
+    (import ./sites/faktura.nix { inherit pkgs; })
   ];
 in
 {
@@ -13,10 +15,15 @@ in
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   services.nginx.virtualHosts = builtins.listToAttrs (map (s: {
-    name = s.serverName;
+    name = s.name;
     value = {
       forceSSL = true;
       inherit sslCertificateKey sslCertificate;
-    } // s;
+    } // s.virtualHost;
   }) sites);
+
+  systemd.services = builtins.listToAttrs (map (s: {
+  	name = s.name;
+    value = s.systemdService;
+  }) (builtins.filter (s: s ? systemdService) sites));
 }

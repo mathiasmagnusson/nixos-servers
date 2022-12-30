@@ -1,11 +1,15 @@
+{ pkgs }:
 {
-  default = true;
+  name = "magnusson.space";
 
-  serverName = "magnusson.space";
-  serverAliases = [ "www.magnusson.space" ];
+  virtualHost = {
+    default = true;
 
-  root = "/var/www/www.magnusson.space";
-  locations."/" = {
-    index = "index.html";
+    serverAliases = [ "www.magnusson.space" ];
+
+    root = "/var/www/www.magnusson.space";
+    locations."/" = {
+      index = "index.html";
+    };
   };
 }
