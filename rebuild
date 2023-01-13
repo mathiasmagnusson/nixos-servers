@@ -1,4 +1,13 @@
 #!/bin/sh
 
-sudo NIXOS_CONFIG="$(realpath $(dirname $0))/space/configuration.nix" \
-    nixos-rebuild switch
+set -ex
+
+remote_flags=""
+if [[ "$1" = "r" ]]; then
+    remote_flags="--target-host magnusson.space --use-remote-sudo"
+    shift
+fi
+
+nixos-rebuild \
+    $remote_flags \
+    -I nixos-config="$(dirname $0)/space/configuration.nix" switch
