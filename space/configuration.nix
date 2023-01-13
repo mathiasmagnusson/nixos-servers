@@ -13,6 +13,8 @@
   boot.loader.grub.version = 2;
   boot.loader.grub.device = "nodev";
 
+  nix.settings.trusted-users = [ "mathias" ];
+
   networking.hostName = "space"; # Define your hostname.
   networking.usePredictableInterfaceNames = false;
   networking.nameservers = [ "1.1.1.1" ];
@@ -43,8 +45,6 @@
     ];
   };
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
     neovim
     git
@@ -78,6 +78,8 @@
     apiKeyFile = "/var/lib/secrets/longview";
   };
 
+  security.sudo.wheelNeedsPassword = false;
+
   # Enable firewall. Some services automatically open ports they use
   networking.firewall.enable = true;
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -90,7 +92,5 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "22.11"; # Did you read the comment?
-
-  system.copySystemConfiguration = true;
 }
 
