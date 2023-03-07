@@ -3,9 +3,8 @@
 set -ex
 
 remote_flags=""
-if [[ "$1" = "r" ]]; then
-    remote_flags="--target-host magnusson.space --use-remote-sudo"
-    shift
+if [[ "$(hostname)" != "space" ]]; then
+    remote_flags="--target-host space --use-remote-sudo"
 fi
 
 nixos-rebuild \
