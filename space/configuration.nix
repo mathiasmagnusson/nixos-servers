@@ -4,8 +4,11 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../nginx
+      ../nginx/sites/faktura.nix
       ./certificates.nix
     ];
+
+  elevate.websites.faktura.enable = true;
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;

@@ -7,7 +7,6 @@ let
     (import ./sites/www.nix     { inherit pkgs; })
     (import ./sites/files.nix   { inherit pkgs; })
     (import ./sites/rr.nix      { inherit pkgs; })
-    (import ./sites/faktura.nix { inherit pkgs; })
   ];
 in
 {

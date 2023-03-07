@@ -1,31 +1,45 @@
-{ pkgs }:
+{ config, pkgs, lib, inputs, ... }:
+with lib;
 let
+  cfg = config.elevate.websites.faktura;
+
   fakturamaskinen = pkgs.callPackage
     /home/mathias/code/projects/fakturamaskinen
     { inherit pkgs; };
 in
 {
-  name = "faktura.magnusson.space";
-
-  virtualHost = {
-    locations."/" = {
-      proxyPass = "http://localhost:8513";
+  options.elevate.websites.faktura = {
+    enable = mkEnableOption "Website for Fakturamaskinen";
+    port = mkOption {
+      type = types.port;
+      default = 7000;
+    };
+    package = mkOption {
+      type = types.package;
+      default = fakturamaskinen;
     };
   };
 
-  systemdService = {
-    description = "Fakturamaskinen";
-    unitConfig = {
-      StartLimitIntervalSec = 10;
+  config = mkIf cfg.enable {
+    services.nginx.virtualHosts."faktura.magnusson.space" = {
+      forceSSL = true;
+      useACMEHost = "magnusson.space";
+      locations."/" = {
+        proxyPass = "http://localhost:${toString cfg.port}";
+      };
     };
-    serviceConfig = {
-      Type = "simple";
-      Restart = "always";
-      RestartSec = 10;
-      ExecStart = "${fakturamaskinen}/bin/fakturamaskinen -address localhost:8513";
-      WorkingDirectory = "/var/www/faktura.magnusson.space";
+
+    systemd.services."faktura.magnusson.space" = {
+      description = "Fakturamaskinen";
+      serviceConfig = {
+        Type = "simple";
+        Restart = "always";
+        RestartSec = 10;
+        ExecStart = "${cfg.package}/bin/fakturamaskinen -address localhost:${toString cfg.port}";
+        WorkingDirectory = "/var/www/faktura.magnusson.space";
+      };
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
     };
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
   };
 }
