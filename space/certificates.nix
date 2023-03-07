@@ -1,6 +1,5 @@
-{ config, pkgs, ... }:
 # https://nixos.org/manual/nixos/stable/index.html#module-security-acme
-# TODO: make this work ;(((
+{ config, pkgs, ... }:
 {
   security.acme.acceptTerms = true;
   security.acme.defaults = {
@@ -15,5 +14,5 @@
     };
   };
 
-  # users.users.nginx.extraGroups = [ "acme" ];
+  users.users.nginx.extraGroups = [ "acme" ];
 }

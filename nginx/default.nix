@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 let
-  sslCertificateKey = "/var/lib/secrets/tls-certificate/privkey.pem";
-  sslCertificate = "/var/lib/secrets/tls-certificate/fullchain.pem";
+  # sslCertificateKey = "/var/lib/secrets/magnusson.space.key";
+  # sslCertificate = "/var/lib/secrets/magnusson.space.crt";
 
   sites = [
     (import ./sites/www.nix     { inherit pkgs; })
@@ -18,7 +18,8 @@ in
     name = s.name;
     value = {
       forceSSL = true;
-      inherit sslCertificateKey sslCertificate;
+      /* inherit sslCertificateKey sslCertificate; */
+      useACMEHost = "magnusson.space";
     } // s.virtualHost;
   }) sites);
 
