@@ -1,11 +1,22 @@
-{ pkgs }:
+{ config, pkgs, lib, ... }:
+with lib;
+let
+  cfg = config.elevate.websites.rr;
+in
 {
-  name = "rr.magnusson.space";
+  options.elevate.websites.rr = {
+    enable = mkEnableOption "rr.magnusson.space";
+  };
 
-  virtualHost = {
-    root = "/var/www/rr.magnusson.space";
-    locations."/" = {
-      index = "index.mp4";
+  config = mkIf cfg.enable {
+    services.nginx.virtualHosts."rr.magnusson.space" = {
+      forceSSL = true;
+      useACMEHost = "magnusson.space";
+
+      root = "/var/www/rr.magnusson.space";
+      locations."/" = {
+        index = "index.mp4";
+      };
     };
   };
 }

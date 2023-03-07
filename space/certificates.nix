@@ -1,18 +1,28 @@
 # https://nixos.org/manual/nixos/stable/index.html#module-security-acme
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
+with lib;
+let
+  cfg = config.elevate.security.tls-certificates;
+in
 {
-  security.acme.acceptTerms = true;
-  security.acme.defaults = {
-    dnsProvider = "linode";
-    email = "mathias@magnusson.space";
-    credentialsFile = "/var/lib/secrets/linode-dns-api-key.ini";
+  options.elevate.security.tls-certificates = {
+    enable = mkEnableOption "Automatically get TLS certificates";
   };
 
-  security.acme.certs = {
-    "magnusson.space" = {
-      extraDomainNames = [ "*.magnusson.space" ];
+  config = mkIf cfg.enable {
+    security.acme.acceptTerms = true;
+    security.acme.defaults = {
+      dnsProvider = "linode";
+      email = "mathias@magnusson.space";
+      credentialsFile = "/var/lib/secrets/linode-dns-api-key.ini";
     };
-  };
 
-  users.users.nginx.extraGroups = [ "acme" ];
+    security.acme.certs = {
+      "magnusson.space" = {
+        extraDomainNames = [ "*.magnusson.space" ];
+      };
+    };
+
+    users.users.nginx.extraGroups = [ "acme" ];
+  };
 }

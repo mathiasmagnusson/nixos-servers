@@ -1,15 +1,25 @@
-{ pkgs }:
+{ config, pkgs, lib, ... }:
+with lib;
+let
+  cfg = config.elevate.websites.www;
+in
 {
-  name = "magnusson.space";
+  options.elevate.websites.www = {
+    enable = mkEnableOption "Static website for magnusson.space";
+  };
 
-  virtualHost = {
-    default = true;
+  config = mkIf cfg.enable {
+    services.nginx.virtualHosts."magnusson.space" = {
+      forceSSL = true;
+      useACMEHost = "magnusson.space";
 
-    serverAliases = [ "www.magnusson.space" ];
+      default = true;
+      serverAliases = [ "www.magnusson.space" ];
 
-    root = "/var/www/www.magnusson.space";
-    locations."/" = {
-      index = "index.html";
+      root = "/var/www/www.magnusson.space";
+      locations."/" = {
+        index = "index.html";
+      };
     };
   };
 }
